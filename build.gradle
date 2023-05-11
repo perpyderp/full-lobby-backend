@@ -13,11 +13,17 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.6.2'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.2'
-	implementation 'org.webjars.npm:react-router-dom:5.3.0'
+	// https://mvnrepository.com/artifact/org.projectlombok/lombok
+	// Spice up your java: Automatic Resource Management, automatic generation of getters, setters, equals, hashCode and toString, and more!
+	compileOnly 'org.projectlombok:lombok:1.18.26'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	// JAXB provides an API and tools that automate the mapping between XML documents and Java objects.
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	
 }
 
 tasks.named('test') {
