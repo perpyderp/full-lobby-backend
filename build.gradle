@@ -1,10 +1,10 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.0.5'
+	id 'org.springframework.boot' version '3.1.0'
 	id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group = 'com.cuisonet'
+group = 'com.perp'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -13,17 +13,14 @@ repositories {
 }
 
 dependencies {
-	// https://mvnrepository.com/artifact/org.projectlombok/lombok
-	// Spice up your java: Automatic Resource Management, automatic generation of getters, setters, equals, hashCode and toString, and more!
-	compileOnly 'org.projectlombok:lombok:1.18.26'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'mysql:mysql-connector-java:8.0.27'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
-	// JAXB provides an API and tools that automate the mapping between XML documents and Java objects.
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
-	
+
+	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
 }
 
 tasks.named('test') {

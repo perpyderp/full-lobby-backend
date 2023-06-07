@@ -1,4 +1,4 @@
-package com.cuisonet.fulllobby.backend;
+package com.perp.fulllobby;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
