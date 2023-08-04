@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.exception.UserNotFoundException;
-import com.perp.fulllobby.model.User;
+import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.repository.UserRepository;
 
 @RestController
@@ -22,17 +22,17 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/user")
-    User newUser(@RequestBody User newUser) {
+    MyUser newUser(@RequestBody MyUser newUser) {
         return userRepository.save(newUser);
     }
 
     @GetMapping("/users")
-    List<User> getAllUsers() {
+    List<MyUser> getAllUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping("/user/{id}")
-    User user(@PathVariable Long id) {
+    MyUser user(@PathVariable Long id) {
         return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
     }
 
