@@ -2,7 +2,6 @@ package com.perp.fulllobby.services;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.model.MyUser;
@@ -17,7 +16,6 @@ public class UserService {
 
     private final RoleRepository roleRepo;
 
-    @Autowired
     public UserService(UserRepository userRepo, RoleRepository roleRepo) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
