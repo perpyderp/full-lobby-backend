@@ -1,5 +1,6 @@
 package com.perp.fulllobby.model;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class MyUser {
     private String phone;
 
     @Column(name="dob")
-    private String dateOfBirth;
+    private Date dateOfBirth;
     
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
@@ -53,8 +54,15 @@ public class MyUser {
     )
     private Set<Role> authorities;
 
+    private Boolean enabled;
+
+    @Column(nullable=true)
+    @JsonIgnore
+    private Long verification;
+
     public MyUser() {
         this.authorities = new HashSet<>();
+        this.enabled = false;
     }
 
     public Long getId() {
@@ -97,6 +105,22 @@ public class MyUser {
         this.lastName = lastName;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Long getVerification() {
+        return verification;
+    }
+
+    public void setVerification(Long verification) {
+        this.verification = verification;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -113,11 +137,11 @@ public class MyUser {
         this.phone = phone;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -133,7 +157,7 @@ public class MyUser {
     public String toString() {
         return "MyUser [id=" + id + ", username=" + username + ", password=" + password + ", firstName=" + firstName
                 + ", lastName=" + lastName + ", email=" + email + ", phone=" + phone + ", dateOfBirth=" + dateOfBirth
-                + ", authorities=" + authorities + "]";
+                + ", authorities=" + authorities + ", enabled=" + enabled + ", verification=" + verification + "]";
     }
 
 }
