@@ -22,8 +22,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	// mysql
-	implementation 'mysql:mysql-connector-java:8.0.27'
+	// implementation 'mysql:mysql-connector-java:8.0.27'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// postgresql
+	implementation 'org.postgresql:postgresql'
 
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
