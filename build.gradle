@@ -29,17 +29,30 @@ dependencies {
 	// postgresql
 	implementation 'org.postgresql:postgresql'
 
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+	/*
+		Gives endpoints to monitor spring application. All endpoints begin with /actuator
+		Popular endpoints:
+		/auditevents
+		/beans
+		/mappings
+		/info
+		By default all endpoints aren't exposed. You will need to add endpoints via the application.properties file
+	*/
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.2'
+
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
+	implementation 'org.springframework.boot:spring-boot-devtools:3.1.2'
+
 	// https://mvnrepository.com/artifact/com.google.api-client/google-api-client
-	implementation 'com.google.api-client:google-api-client:2.2.0'
-
-	// https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client
-	implementation 'com.google.oauth-client:google-oauth-client:1.34.1'
-
-	// https://mvnrepository.com/artifact/com.google.apis/google-api-services-gmail
-	implementation 'com.google.apis:google-api-services-gmail:v1-rev110-1.25.0'
+	implementation 'com.google.api-client:google-api-client:2.0.0'
 
 	// https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty
-	implementation 'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
+
+	// https://mvnrepository.com/artifact/com.google.apis/google-api-services-gmail
+    implementation 'com.google.apis:google-api-services-gmail:v1-rev20220404-2.0.0'
 
 	// https://mvnrepository.com/artifact/com.sun.mail/jakarta.mail
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
