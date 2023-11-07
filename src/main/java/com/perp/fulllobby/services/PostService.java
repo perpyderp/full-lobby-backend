@@ -1,5 +1,7 @@
 package com.perp.fulllobby.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.exception.CannotCreatePostException;
@@ -14,6 +16,18 @@ public class PostService {
 
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
+    }
+
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
+    }
+
+    public List<Post> getPostsByUsername(String username) {
+        return postRepository.findByUsername(username);
+    }
+
+    public List<Post> getPostsByUserId(Long id) {
+        return postRepository.findByUserId(id);
     }
 
     public Post getPostById(Long id) {

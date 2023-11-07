@@ -1,12 +1,12 @@
 package com.perp.fulllobby.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.model.Post;
@@ -24,14 +24,22 @@ public class PostController {
 
     @GetMapping
     public List<Post> getAllPosts() {
-        List<Post> posts = new ArrayList<Post>();
-        posts.add(new Post());
-        return posts;
+        return postService.getAllPosts();
     }
 
     @PostMapping
     public Post createPost(@RequestBody Post newPost) {
         return postService.createPost(newPost);
+    }
+
+    @GetMapping("/{userId}")
+    public List<Post> getPostsByUserId(@RequestParam(name = "userId", required = true)Long id) {
+        return postService.getPostsByUserId(id);
+    }
+
+    @GetMapping("/{username}")
+    public List<Post> getPostsByUsername(@RequestParam(name = "username", required = true)String username) {
+        return postService.getPostsByUsername(username);
     }
 
 }

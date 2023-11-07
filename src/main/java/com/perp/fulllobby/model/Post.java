@@ -1,11 +1,17 @@
 package com.perp.fulllobby.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "posts")
@@ -16,12 +22,22 @@ public class Post {
     private long id;
 
     @Column
-    String title;
+    private String title;
 
     @Column
-    String description;
+    private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private String userId;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at")
+    private Date updatedAt;
 
     public String getTitle() {
         return title;
@@ -34,6 +50,24 @@ public class Post {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }
