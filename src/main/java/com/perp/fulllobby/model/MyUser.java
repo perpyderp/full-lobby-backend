@@ -1,6 +1,5 @@
 package com.perp.fulllobby.model;
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,34 +17,35 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class MyUser {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userID")
-    private Long id;
+    @Column(name = "user_id")
+    private long id;
 
-    @Column(unique = true)
+    @Column
     private String username;
+
+    @Column
+    private String email;
 
     @JsonIgnore
     private String password;
 
-    @Column(name = "firstName")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(unique = true, name = "email")
-    private String email;
+    @Column
+    private Boolean active;
 
-    private String phone;
+    @Column
+    private Boolean verified;
 
-    @Column(name="dob")
-    private Date dateOfBirth;
-    
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
         name="user_role_junction",
@@ -54,22 +54,16 @@ public class MyUser {
     )
     private Set<Role> authorities;
 
-    private Boolean enabled;
-
-    @Column(nullable=true)
-    @JsonIgnore
-    private Long verification;
-
     public MyUser() {
         this.authorities = new HashSet<>();
-        this.enabled = false;
+        this.active = false;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -105,44 +99,20 @@ public class MyUser {
         this.lastName = lastName;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    public Long getVerification() {
-        return verification;
+    public Boolean getVerified() {
+        return verified;
     }
 
-    public void setVerification(Long verification) {
-        this.verification = verification;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
     public Set<Role> getAuthorities() {
@@ -153,11 +123,12 @@ public class MyUser {
         this.authorities = authorities;
     }
 
-    @Override
-    public String toString() {
-        return "MyUser [id=" + id + ", username=" + username + ", password=" + password + ", firstName=" + firstName
-                + ", lastName=" + lastName + ", email=" + email + ", phone=" + phone + ", dateOfBirth=" + dateOfBirth
-                + ", authorities=" + authorities + ", enabled=" + enabled + ", verification=" + verification + "]";
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

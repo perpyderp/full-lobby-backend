@@ -1,9 +1,7 @@
 package com.perp.fulllobby.exception;
 
-public class EmailAlreadyTakenException extends RuntimeException {
-    
+public class EmailAlreadyTakenException extends RuntimeException{
     public EmailAlreadyTakenException() {
-        super("The email provided is already taken");
+        super("Email is already in use");
     }
-
 }

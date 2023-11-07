@@ -2,38 +2,41 @@ package com.perp.fulllobby.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perp.fulllobby.exception.UserNotFoundException;
 import com.perp.fulllobby.model.MyUser;
-import com.perp.fulllobby.repository.UserRepository;
+import com.perp.fulllobby.services.MyUserService;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@RequestMapping("/api/users")
 public class UserController {
     
-    @Autowired
-    private UserRepository userRepository;
+    private final MyUserService userService;
 
-    @PostMapping("/user")
-    MyUser newUser(@RequestBody MyUser newUser) {
-        return userRepository.save(newUser);
+    public UserController(MyUserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/users")
-    List<MyUser> getAllUsers() {
-        return userRepository.findAll();
+    @GetMapping("/{id}")
+    public MyUser getUser(@RequestParam(value="id", required = true)Long id) {
+        return userService.getUserById(id);
     }
 
-    @GetMapping("/user/{id}")
-    MyUser user(@PathVariable Long id) {
-        return userRepository.findById(id).orElseThrow(()->new UserNotFoundException(id));
+    @GetMapping
+    public List<MyUser> getAllUsers() {
+        return userService.getAllUsers();
     }
+
+    @PostMapping
+    public MyUser addUser(@RequestBody MyUser newUser) {
+        return userService.registerUser(newUser);
+    }
+
+    
 
 }
