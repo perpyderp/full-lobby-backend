@@ -4,11 +4,14 @@ package com.perp.fulllobby.services;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.google.api.client.http.HttpResponse;
 import com.perp.fulllobby.exception.CannotUpdateUserException;
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
+import com.perp.fulllobby.exception.IncorrectCredentialsException;
 import com.perp.fulllobby.exception.UserNotFoundException;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.RegistrationObject;
@@ -35,6 +38,17 @@ public class MyUserService {
 
     public List<MyUser> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public MyUser login(String username, String password) {
+        MyUser user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+        if(passwordEncoder.matches(password, user.getPassword())) {
+            return user;
+        }
+        else {
+            throw new IncorrectCredentialsException();
+        }
     }
 
     public MyUser registerUser(RegistrationObject newUser) {
@@ -66,6 +80,10 @@ public class MyUserService {
     }
 
     public List<MyUser> getUserFriends(Object d) {
+        return null;
+    }
+
+    public ResponseEntity<HttpResponse> removeFriend(MyUser removeFriend) {
         return null;
     }
 
