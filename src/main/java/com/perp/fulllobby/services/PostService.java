@@ -22,9 +22,9 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public List<Post> getPostsByUsername(String username) {
-        return postRepository.findByUsername(username);
-    }
+    // public List<Post> getPostsByUsername(String username) {
+    //     return postRepository.findByUsername(username);
+    // }
 
     public List<Post> getPostsByUserId(Long id) {
         return postRepository.findByUserId(id);

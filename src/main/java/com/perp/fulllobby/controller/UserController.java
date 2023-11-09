@@ -3,13 +3,14 @@ package com.perp.fulllobby.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.model.MyUser;
+import com.perp.fulllobby.model.RegistrationObject;
 import com.perp.fulllobby.services.MyUserService;
 
 @RestController
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public MyUser getUser(@RequestParam(value="id", required = true)Long id) {
+    public MyUser getUser(@PathVariable(value="id", required = true)Long id) {
         return userService.getUserById(id);
     }
 
@@ -33,10 +34,13 @@ public class UserController {
     }
 
     @PostMapping
-    public MyUser addUser(@RequestBody MyUser newUser) {
+    public MyUser addUser(@RequestBody RegistrationObject newUser) {
         return userService.registerUser(newUser);
     }
 
-    
+    @GetMapping("/{id}/friends")
+    public List<MyUser> getUserFriends(@PathVariable(value="id", required = true)Long id) {
+        return userService.getUserFriends(id);
+    }
 
 }

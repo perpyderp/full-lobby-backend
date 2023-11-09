@@ -3,10 +3,10 @@ package com.perp.fulllobby.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.model.Post;
@@ -33,13 +33,13 @@ public class PostController {
     }
 
     @GetMapping("/{userId}")
-    public List<Post> getPostsByUserId(@RequestParam(name = "userId", required = true)Long id) {
+    public List<Post> getPostsByUserId(@PathVariable(name = "userId", required = true)Long id) {
         return postService.getPostsByUserId(id);
     }
 
-    @GetMapping("/{username}")
-    public List<Post> getPostsByUsername(@RequestParam(name = "username", required = true)String username) {
-        return postService.getPostsByUsername(username);
-    }
+    // @GetMapping("/{username}")
+    // public List<Post> getPostsByUsername(@PathVariable(name = "username", required = true)String username) {
+    //     return postService.getPostsByUsername(username);
+    // }
 
 }

@@ -1,5 +1,6 @@
 package com.perp.fulllobby.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,9 @@ public class MyUser {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "date_of_birth")
+    private Date dob;
 
     @Column
     private Boolean active;
@@ -130,5 +134,14 @@ public class MyUser {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "MyUser [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
+                + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", active=" + active
+                + ", verified=" + verified + ", authorities=" + authorities + "]";
+    }
+
+    
 
 }

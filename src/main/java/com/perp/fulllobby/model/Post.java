@@ -29,14 +29,14 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private String userId;
+    private MyUser user;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at")
+    @Column(name = "updated_at")
     private Date updatedAt;
 
     public String getTitle() {

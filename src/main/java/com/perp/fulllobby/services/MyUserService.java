@@ -4,12 +4,14 @@ package com.perp.fulllobby.services;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.exception.CannotUpdateUserException;
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
 import com.perp.fulllobby.exception.UserNotFoundException;
 import com.perp.fulllobby.model.MyUser;
+import com.perp.fulllobby.model.RegistrationObject;
 import com.perp.fulllobby.model.Role;
 import com.perp.fulllobby.repository.RoleRepository;
 import com.perp.fulllobby.repository.UserRepository;
@@ -19,10 +21,12 @@ public class MyUserService {
     
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MyUserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public MyUserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public MyUser getUserById(Long id) {
@@ -33,12 +37,11 @@ public class MyUserService {
         return userRepository.findAll();
     }
 
-    public MyUser registerUser(MyUser newUser) {
+    public MyUser registerUser(RegistrationObject newUser) {
         MyUser user = new MyUser();
+        System.out.println(newUser);
         user.setUsername(newUser.getUsername());
-        user.setFirstName(newUser.getFirstName());
-        user.setPassword(newUser.getPassword());
-        user.setLastName(newUser.getLastName());
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setEmail(newUser.getEmail());
 
         Set<Role> roles = user.getAuthorities();
@@ -60,6 +63,10 @@ public class MyUserService {
         catch (Exception e) {
             throw new CannotUpdateUserException();
         }
+    }
+
+    public List<MyUser> getUserFriends(Object d) {
+        return null;
     }
 
 }

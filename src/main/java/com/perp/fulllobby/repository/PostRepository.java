@@ -11,5 +11,4 @@ import com.perp.fulllobby.model.Post;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long>{
     List<Post> findByUserId(long userId);
-    List<Post> findByUsername(String username);
 }
