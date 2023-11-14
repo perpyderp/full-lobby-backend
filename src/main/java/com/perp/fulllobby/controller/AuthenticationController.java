@@ -8,21 +8,24 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
 import com.perp.fulllobby.exception.IncorrectCredentialsException;
 import com.perp.fulllobby.model.LoginResponse;
 import com.perp.fulllobby.model.MyUser;
+import com.perp.fulllobby.model.RegistrationObject;
 import com.perp.fulllobby.services.MyUserService;
 import com.perp.fulllobby.services.TokenService;
 
-@Controller
+@RestController
 @RequestMapping("/api/auth")
+@CrossOrigin("*")
 public class AuthenticationController {
     
     private final MyUserService userService;
@@ -45,6 +48,10 @@ public class AuthenticationController {
         return new ResponseEntity<String>("The email is already in use. Please login with your password or follow prompts for forgotten passwords.", HttpStatus.CONFLICT);
     }
 
+    @PostMapping("/register")
+    public MyUser addUser(@RequestBody RegistrationObject newUser) {
+        return userService.registerUser(newUser);
+    }
 
     // @TODO This is just a temporary method. Actual authentication logic will need to be implemented in SecurityConfig.java and AuthenticationController.java
     @PostMapping("/login")

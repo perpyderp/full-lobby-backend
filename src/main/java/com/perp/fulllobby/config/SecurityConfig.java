@@ -24,18 +24,15 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.perp.fulllobby.services.MyUserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final RSAKeyProperties keys;
-    private final MyUserService userService; 
 
-    public SecurityConfig(RSAKeyProperties keys, MyUserService userService) {
+    public SecurityConfig(RSAKeyProperties keys) {
         this.keys = keys;
-        this.userService = userService;
     }
 
     @Bean
@@ -43,6 +40,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
     public AuthenticationManager authManager(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
@@ -53,13 +51,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http.csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated())
+                .requestMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
+            )
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .build();
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        
+        return http.build();
     }
 
     @Bean
