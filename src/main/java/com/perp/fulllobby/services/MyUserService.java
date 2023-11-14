@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.google.api.client.http.HttpResponse;
 import com.perp.fulllobby.exception.CannotUpdateUserException;
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
-import com.perp.fulllobby.exception.IncorrectCredentialsException;
 import com.perp.fulllobby.exception.UserNotFoundException;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.RegistrationObject;
