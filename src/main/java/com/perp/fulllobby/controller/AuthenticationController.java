@@ -15,7 +15,7 @@ import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.services.MyUserService;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
     
     private final MyUserService userService;
