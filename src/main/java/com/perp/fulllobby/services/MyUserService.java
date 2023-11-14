@@ -47,15 +47,10 @@ public class MyUserService implements UserDetailsService{
         return userRepository.findAll();
     }
 
-    public MyUser login(String username, String password) {
+    public MyUser getByUsername(String username) {
         MyUser user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
-        if(passwordEncoder.matches(password, user.getPassword())) {
-            return user;
-        }
-        else {
-            throw new IncorrectCredentialsException();
-        }
+        return user;
     }
 
     public MyUser registerUser(RegistrationObject newUser) {
@@ -77,7 +72,7 @@ public class MyUserService implements UserDetailsService{
         }
     }
 
-    public MyUser updatUser(MyUser updatedUser) {
+    public MyUser updateUser(MyUser updatedUser) {
         try {
             return userRepository.save(updatedUser);
         }
@@ -107,6 +102,10 @@ public class MyUserService implements UserDetailsService{
         
         return userDetails;
 
+    }
+
+    public MyUser verifyUser(String username, Long code) {
+        return null;
     }
 
 }
