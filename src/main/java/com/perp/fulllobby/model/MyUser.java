@@ -66,6 +66,7 @@ public class MyUser{
     public MyUser() {
         this.authorities = new HashSet<>();
         this.active = false;
+        this.verified = false;
     }
 
     public long getId() {
