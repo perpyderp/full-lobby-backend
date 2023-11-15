@@ -69,6 +69,7 @@ public class MyUser{
         joinColumns = {@JoinColumn(name = "user_id")},
         inverseJoinColumns = {@JoinColumn(name = "friend_id")}
     )
+    @JsonIgnore
     private Set<MyUser> friends;
 
     @Column
