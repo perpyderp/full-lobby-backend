@@ -3,18 +3,23 @@ package com.perp.fulllobby.controller;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.http.HttpResponse;
 import com.perp.fulllobby.model.MyUser;
+import com.perp.fulllobby.services.ImageService;
 import com.perp.fulllobby.services.MyUserService;
 import com.perp.fulllobby.services.TokenService;
 
@@ -25,10 +30,12 @@ public class UserController {
     
     private final MyUserService userService;
     private final TokenService tokenService;
+    private final ImageService imageService;
 
-    public UserController(MyUserService userService, TokenService tokenService) {
+    public UserController(MyUserService userService, TokenService tokenService, ImageService imageService) {
         this.userService = userService;
         this.tokenService = tokenService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/verify")
@@ -49,6 +56,13 @@ public class UserController {
         }
 
         return user;
+    }
+
+    @PostMapping("/upload/avatar")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file) {
+        String uploadAvatar = imageService.uploadAvatar(file, "avatar");
+
+        return ResponseEntity.status(HttpStatus.OK).body(uploadAvatar);
     }
 
     @GetMapping("/{id}")
