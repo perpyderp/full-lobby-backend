@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -49,12 +51,33 @@ public class MyUser{
     @Column(name = "date_of_birth")
     private Date dob;
 
+    private String bio;
+
+    private String nickname;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar", referencedColumnName = "imageId")
+    private Image avatar;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "banner", referencedColumnName = "imageId")
+    private Image banner;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name="friends",
+        joinColumns = {@JoinColumn(name = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "friend_id")}
+    )
+    private Set<MyUser> friends;
+
     @Column
     private Boolean active;
 
     @Column
     private Boolean verified;
 
+    /* Security related columns */
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
         name="user_role_junction",
@@ -65,6 +88,7 @@ public class MyUser{
 
     public MyUser() {
         this.authorities = new HashSet<>();
+        this.friends = new HashSet<>();
         this.active = false;
         this.verified = false;
     }
@@ -141,11 +165,60 @@ public class MyUser{
         this.email = email;
     }
 
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Image getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
+    }
+
+    public Image getBanner() {
+        return banner;
+    }
+
+    public void setBanner(Image banner) {
+        this.banner = banner;
+    }
+
+    public Set<MyUser> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<MyUser> friends) {
+        this.friends = friends;
+    }
+
     @Override
     public String toString() {
         return "MyUser [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-                + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", active=" + active
-                + ", verified=" + verified + ", authorities=" + authorities + "]";
+                + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", bio=" + bio
+                + ", nickname=" + nickname + ", avatar=" + avatar + ", banner=" + banner + ", friends=" + friends.size()
+                + ", active=" + active + ", verified=" + verified + ", authorities=" + authorities + "]";
     }
 
     
