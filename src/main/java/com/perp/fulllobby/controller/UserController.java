@@ -20,8 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.http.HttpResponse;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
+import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.model.MyUser;
-import com.perp.fulllobby.services.ImageService;
 import com.perp.fulllobby.services.MyUserService;
 import com.perp.fulllobby.services.TokenService;
 
@@ -32,12 +32,10 @@ public class UserController {
     
     private final MyUserService userService;
     private final TokenService tokenService;
-    private final ImageService imageService;
 
-    public UserController(MyUserService userService, TokenService tokenService, ImageService imageService) {
+    public UserController(MyUserService userService, TokenService tokenService) {
         this.userService = userService;
         this.tokenService = tokenService;
-        this.imageService = imageService;
     }
 
     @ExceptionHandler({UnableToSaveAvatarException.class})
@@ -47,29 +45,27 @@ public class UserController {
 
     @GetMapping("/verify")
     public MyUser verifyIdentity(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        String username = "";
-        MyUser user;
 
-        if(token.substring(0, 6).equals("Bearer")) {
-            String strippedToken = token.substring(7);
-            username = tokenService.getUsernameFromToken(strippedToken);
-        }
-        try {
-            user = userService.getByUsername(username);
+        String username = tokenService.getUsernameFromToken(token);
 
-        }
-        catch(Exception e) {
-            user = null;
-        }
+        return userService.getByUsername(username);
 
-        return user;
     }
 
     @PostMapping("/upload/avatar")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file) throws UnableToSaveAvatarException{
-        String uploadAvatar = imageService.uploadAvatar(file, "avatar");
+    public MyUser uploadAvatar(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam("image") MultipartFile file) throws UnableToSaveAvatarException{
 
-        return ResponseEntity.status(HttpStatus.OK).body(uploadAvatar);
+        String username = tokenService.getUsernameFromToken(token);
+
+        return userService.setAvatar(username, file);
+    }
+
+    @PostMapping("/upload/banner")
+    public MyUser uploadBanner(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam("image") MultipartFile file) throws UnableToSaveBannerException{
+
+        String username = tokenService.getUsernameFromToken(token);
+
+        return userService.setBanner(username, file);
     }
 
     @GetMapping("/{id}")

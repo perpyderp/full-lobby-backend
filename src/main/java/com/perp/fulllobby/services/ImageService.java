@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.perp.fulllobby.exception.ImageNotFoundException;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
+import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.model.Image;
 import com.perp.fulllobby.repository.ImageRepository;
 
@@ -29,11 +30,11 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public String uploadAvatar(MultipartFile file, String prefix) throws UnableToSaveAvatarException {
+    public Image uploadAvatar(MultipartFile file) throws UnableToSaveAvatarException {
         try {
             String extensionType = "." + file.getContentType().split("/")[1];
 
-            File img = File.createTempFile(prefix, extensionType, DIRECTORY);
+            File img = File.createTempFile("avatar", extensionType, DIRECTORY);
 
             file.transferTo(img);
 
@@ -43,10 +44,32 @@ public class ImageService {
 
             Image saved = imageRepository.save(i);
 
-            return "File uploaded successfully: " + img.getName();
+            return saved;
         }
         catch(IOException e) {
             throw new UnableToSaveAvatarException();
+        }
+
+    }
+
+    public Image uploadBanner(MultipartFile file) throws UnableToSaveBannerException {
+        try {
+            String extensionType = "." + file.getContentType().split("/")[1];
+
+            File img = File.createTempFile("banner", extensionType, DIRECTORY);
+
+            file.transferTo(img);
+
+            String imageUrl = URL + img.getName();
+            
+            Image i = new Image(img.getName(), file.getContentType(), img.getPath(), imageUrl);
+
+            Image saved = imageRepository.save(i);
+
+            return saved;
+        }
+        catch(IOException e) {
+            throw new UnableToSaveBannerException();
         }
 
     }
@@ -73,8 +96,8 @@ public class ImageService {
     }
 
     // @TODO Store avatar images on imgur instead of locally
-    public String uploadAvatar(MultipartFile avatar) {
-        return "";
-    }
+    // public String uploadAvatar(MultipartFile avatar) {
+    //     return "";
+    // }
 
 }
