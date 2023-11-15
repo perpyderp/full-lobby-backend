@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.perp.fulllobby.exception.ImageNotFoundException;
+import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.model.Image;
 import com.perp.fulllobby.repository.ImageRepository;
 
@@ -27,7 +29,7 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public String uploadAvatar(MultipartFile file, String prefix) {
+    public String uploadAvatar(MultipartFile file, String prefix) throws UnableToSaveAvatarException {
         try {
             String extensionType = "." + file.getContentType().split("/")[1];
 
@@ -44,13 +46,12 @@ public class ImageService {
             return "File uploaded successfully: " + img.getName();
         }
         catch(IOException e) {
-            e.printStackTrace();
-            return "File upload unsuccessful";
+            throw new UnableToSaveAvatarException();
         }
 
     }
 
-    public byte[] downloadImage(String filename) {
+    public byte[] downloadImage(String filename) throws ImageNotFoundException{
         try {
             Image image = imageRepository.findByImageName(filename).get();
 
@@ -61,8 +62,7 @@ public class ImageService {
             return imageBytes;
         }
         catch(IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new ImageNotFoundException(filename);
         }
     }
 

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.http.HttpResponse;
+import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.services.ImageService;
 import com.perp.fulllobby.services.MyUserService;
@@ -36,6 +38,11 @@ public class UserController {
         this.userService = userService;
         this.tokenService = tokenService;
         this.imageService = imageService;
+    }
+
+    @ExceptionHandler({UnableToSaveAvatarException.class})
+    public ResponseEntity<String> handleAvatarException() {
+        return new ResponseEntity<String>("Unable to process the image", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @GetMapping("/verify")
@@ -59,7 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/upload/avatar")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file) {
+    public ResponseEntity<String> uploadAvatar(@RequestParam("image") MultipartFile file) throws UnableToSaveAvatarException{
         String uploadAvatar = imageService.uploadAvatar(file, "avatar");
 
         return ResponseEntity.status(HttpStatus.OK).body(uploadAvatar);
