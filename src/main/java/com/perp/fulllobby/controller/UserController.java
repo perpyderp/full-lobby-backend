@@ -1,6 +1,7 @@
 package com.perp.fulllobby.controller;
 
 import java.util.List;
+import java.util.LinkedHashMap;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.api.client.http.HttpResponse;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
+import com.perp.fulllobby.exception.UnableToSendFriendRequest;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.services.MyUserService;
 import com.perp.fulllobby.services.TokenService;
@@ -41,6 +44,11 @@ public class UserController {
     @ExceptionHandler({UnableToSaveAvatarException.class})
     public ResponseEntity<String> handleAvatarException() {
         return new ResponseEntity<String>("Unable to process the image", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler({UnableToSendFriendRequest.class})
+    public ResponseEntity<String> handleFriendRequestException() {
+        return new ResponseEntity<String>("Unable to send friend request", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/verify")
@@ -66,6 +74,21 @@ public class UserController {
         String username = tokenService.getUsernameFromToken(token);
 
         return userService.setBanner(username, file);
+    }
+
+    @PostMapping("/add-friend")
+    public ResponseEntity<String> addFriend(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody LinkedHashMap<String, String> body) throws UnableToSendFriendRequest{
+
+        String loggedInUser = tokenService.getUsernameFromToken(token);
+        String addedUser = body.get("addedUser");
+
+        return userService.sendFriendRequest(loggedInUser, addedUser);
+    }
+    
+
+    @PutMapping("/")
+    public MyUser updateUser(@RequestBody MyUser user) {
+        return userService.updateUser(user);
     }
 
     @GetMapping("/{id}")

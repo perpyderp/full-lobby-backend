@@ -56,21 +56,12 @@ public class MyUser{
     private String nickname;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "avatar", referencedColumnName = "imageId")
+    @JoinColumn(name = "avatar", referencedColumnName = "image_id")
     private Image avatar;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "banner", referencedColumnName = "imageId")
+    @JoinColumn(name = "banner", referencedColumnName = "image_id")
     private Image banner;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name="friends",
-        joinColumns = {@JoinColumn(name = "user_id")},
-        inverseJoinColumns = {@JoinColumn(name = "friend_id")}
-    )
-    @JsonIgnore
-    private Set<MyUser> friends;
 
     @Column
     private Boolean active;
@@ -89,7 +80,6 @@ public class MyUser{
 
     public MyUser() {
         this.authorities = new HashSet<>();
-        this.friends = new HashSet<>();
         this.active = false;
         this.verified = false;
     }
@@ -206,21 +196,15 @@ public class MyUser{
         this.banner = banner;
     }
 
-    public Set<MyUser> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(Set<MyUser> friends) {
-        this.friends = friends;
-    }
-
     @Override
     public String toString() {
         return "MyUser [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
                 + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", bio=" + bio
-                + ", nickname=" + nickname + ", avatar=" + avatar + ", banner=" + banner + ", friends=" + friends.size()
-                + ", active=" + active + ", verified=" + verified + ", authorities=" + authorities + "]";
+                + ", nickname=" + nickname + ", avatar=" + avatar + ", banner=" + banner + ", active=" + active
+                + ", verified=" + verified + ", authorities=" + authorities + "]";
     }
+
+
 
     
 

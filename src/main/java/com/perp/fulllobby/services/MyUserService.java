@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,11 +22,14 @@ import com.perp.fulllobby.exception.CannotUpdateUserException;
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
+import com.perp.fulllobby.exception.UnableToSendFriendRequest;
 import com.perp.fulllobby.exception.UserNotFoundException;
+import com.perp.fulllobby.model.Friend;
 import com.perp.fulllobby.model.Image;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.RegistrationObject;
 import com.perp.fulllobby.model.Role;
+import com.perp.fulllobby.repository.FriendRepository;
 import com.perp.fulllobby.repository.RoleRepository;
 import com.perp.fulllobby.repository.UserRepository;
 
@@ -34,12 +38,15 @@ public class MyUserService implements UserDetailsService{
     
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final FriendRepository friendRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
 
-    public MyUserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ImageService imageService) {
+    public MyUserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, 
+                        ImageService imageService, FriendRepository friendRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.friendRepository = friendRepository;
         this.passwordEncoder = passwordEncoder;
         this.imageService = imageService;
     }
@@ -127,6 +134,24 @@ public class MyUserService implements UserDetailsService{
         user.setBanner(banner);
 
         return userRepository.save(user);
+    }
+
+    public ResponseEntity<String> sendFriendRequest(String username, String friendName) throws UnableToSendFriendRequest{
+        MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        MyUser addedUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+        Friend newFriend = new Friend();
+        newFriend.setUser(currentUser);
+        newFriend.setFriend(addedUser);
+
+        try {
+            friendRepository.save(newFriend);
+        }
+        catch (Exception e) {
+            throw new UnableToSendFriendRequest();
+        }
+        
+        return new ResponseEntity<String>("Successfully sent friend request", HttpStatus.CREATED);
     }
 
     public MyUser verifyUser(String username, Long code) {
