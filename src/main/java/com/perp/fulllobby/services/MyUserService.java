@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.http.HttpResponse;
+import com.perp.fulllobby.exception.CannotFindFriendRequestException;
+import com.perp.fulllobby.exception.CannotFriendSelf;
 import com.perp.fulllobby.exception.CannotUpdateUserException;
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
@@ -93,8 +95,12 @@ public class MyUserService implements UserDetailsService{
         }
     }
 
-    public List<MyUser> getUserFriends(Object d) {
-        return null;
+    public Set<MyUser> getUserFriends(String username) {
+        
+        MyUser user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+        return user.getFriends();
+
     }
 
     public ResponseEntity<HttpResponse> removeFriend(MyUser removeFriend) {
@@ -136,7 +142,10 @@ public class MyUserService implements UserDetailsService{
         return userRepository.save(user);
     }
 
-    public ResponseEntity<String> sendFriendRequest(String username, String friendName) throws UnableToSendFriendRequest{
+    public ResponseEntity<String> sendFriendRequest(String username, String friendName) throws UnableToSendFriendRequest, CannotFriendSelf{
+
+        if(username.equals(friendName)) throw new CannotFriendSelf();
+
         MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         MyUser addedUser = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
 
@@ -152,6 +161,31 @@ public class MyUserService implements UserDetailsService{
         }
         
         return new ResponseEntity<String>("Successfully sent friend request", HttpStatus.CREATED);
+    }
+
+    public Set<MyUser> acceptFriend(String username, String friendName) throws CannotFindFriendRequestException{
+
+        MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        MyUser friend = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
+
+        Friend friendship = friendRepository.findByUserAndFriend(currentUser, friend).orElseThrow(CannotFindFriendRequestException::new);
+
+        friendship.setAccepted(true);
+
+        Set<MyUser> currentUserFriendList = currentUser.getFriends();
+        Set<MyUser> friendList = friend.getFriends();
+
+        currentUserFriendList.add(friend);
+        currentUser.setFriends(currentUserFriendList);
+        
+        friendList.add(currentUser);
+        friend.setFriends(friendList);
+
+        userRepository.save(currentUser);
+        userRepository.save(friend);
+
+        return currentUser.getFriends();
+
     }
 
     public MyUser verifyUser(String username, Long code) {

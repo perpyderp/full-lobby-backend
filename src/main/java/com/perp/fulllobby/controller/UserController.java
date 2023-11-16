@@ -1,6 +1,7 @@
 package com.perp.fulllobby.controller;
 
 import java.util.List;
+import java.util.Set;
 import java.util.LinkedHashMap;
 
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.http.HttpResponse;
+import com.perp.fulllobby.exception.CannotFindFriendRequestException;
+import com.perp.fulllobby.exception.CannotFriendSelf;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.exception.UnableToSendFriendRequest;
@@ -51,6 +54,11 @@ public class UserController {
         return new ResponseEntity<String>("Unable to send friend request", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler({CannotFriendSelf.class})
+    public ResponseEntity<String> handleFriendSelfException() {
+        return new ResponseEntity<String>("You friend request yourself. ", HttpStatus.FORBIDDEN);
+    }
+
     @GetMapping("/verify")
     public MyUser verifyIdentity(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
@@ -77,12 +85,22 @@ public class UserController {
     }
 
     @PostMapping("/add-friend")
-    public ResponseEntity<String> addFriend(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody LinkedHashMap<String, String> body) throws UnableToSendFriendRequest{
+    public ResponseEntity<String> addFriend(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody LinkedHashMap<String, String> body) 
+        throws UnableToSendFriendRequest, CannotFriendSelf {
 
         String loggedInUser = tokenService.getUsernameFromToken(token);
         String addedUser = body.get("addedUser");
 
         return userService.sendFriendRequest(loggedInUser, addedUser);
+    }
+
+    @PutMapping("/accept")
+    public Set<MyUser> acceptFriendRequest(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody LinkedHashMap<String, String> body) throws CannotFindFriendRequestException{
+
+        String loggedInUser = tokenService.getUsernameFromToken(token);
+        String acceptedUser = body.get("acceptedUser");
+
+        return userService.acceptFriend(loggedInUser, acceptedUser);
     }
     
 
@@ -91,9 +109,9 @@ public class UserController {
         return userService.updateUser(user);
     }
 
-    @GetMapping("/{id}")
-    public MyUser getUser(@PathVariable(value="id", required = true)Long id) {
-        return userService.getUserById(id);
+    @GetMapping("/{username}")
+    public MyUser getUser(@PathVariable(name = "username") String username) {
+        return userService.getByUsername(username);
     }
 
     @GetMapping
@@ -101,9 +119,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}/friends")
-    public List<MyUser> getUserFriends(@PathVariable(value="id", required = true)Long id) {
-        return userService.getUserFriends(id);
+    @GetMapping("/{username}/friends")
+    public Set<MyUser> getUserFriends(@PathVariable("username") String username) {
+        return userService.getUserFriends(username);
     }
 
     @DeleteMapping("/{id}/friends")

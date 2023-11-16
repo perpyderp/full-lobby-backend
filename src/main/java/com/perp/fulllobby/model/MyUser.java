@@ -64,10 +64,15 @@ public class MyUser{
     private Image banner;
 
     @Column
-    private Boolean active;
-
-    @Column
     private Boolean verified;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name="user_friends_junction",
+        joinColumns = {@JoinColumn(name = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "friend_id")}
+    )
+    private Set<MyUser> friends;
 
     /* Security related columns */
     @ManyToMany(fetch=FetchType.EAGER)
@@ -80,7 +85,6 @@ public class MyUser{
 
     public MyUser() {
         this.authorities = new HashSet<>();
-        this.active = false;
         this.verified = false;
     }
 
@@ -122,14 +126,6 @@ public class MyUser{
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     public Boolean getVerified() {
@@ -196,16 +192,20 @@ public class MyUser{
         this.banner = banner;
     }
 
+    public Set<MyUser> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<MyUser> friends) {
+        this.friends = friends;
+    }
+
     @Override
     public String toString() {
         return "MyUser [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
                 + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", bio=" + bio
-                + ", nickname=" + nickname + ", avatar=" + avatar + ", banner=" + banner + ", active=" + active
-                + ", verified=" + verified + ", authorities=" + authorities + "]";
+                + ", nickname=" + nickname + ", avatar=" + avatar + ", banner=" + banner 
+                + ", verified=" + verified + ", friends=" + friends.size() + ", authorities=" + authorities + "]";
     }
-
-
-
-    
 
 }
