@@ -138,7 +138,7 @@ public class MyUserService implements UserDetailsService{
 
     public ResponseEntity<String> sendFriendRequest(String username, String friendName) throws UnableToSendFriendRequest{
         MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        MyUser addedUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        MyUser addedUser = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
 
         Friend newFriend = new Friend();
         newFriend.setUser(currentUser);
