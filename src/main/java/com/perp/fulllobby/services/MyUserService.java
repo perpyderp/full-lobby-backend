@@ -26,7 +26,7 @@ import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.exception.UnableToSendFriendRequest;
 import com.perp.fulllobby.exception.UserNotFoundException;
-import com.perp.fulllobby.model.Friend;
+import com.perp.fulllobby.model.Friendship;
 import com.perp.fulllobby.model.Image;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.RegistrationObject;
@@ -149,9 +149,9 @@ public class MyUserService implements UserDetailsService{
         MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         MyUser addedUser = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
 
-        Friend newFriend = new Friend();
-        newFriend.setUser(currentUser);
-        newFriend.setFriend(addedUser);
+        Friendship newFriend = new Friendship();
+        newFriend.setFirstUser(currentUser);
+        newFriend.setSecondUser(addedUser);
 
         try {
             friendRepository.save(newFriend);
@@ -168,11 +168,12 @@ public class MyUserService implements UserDetailsService{
         MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         MyUser friend = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
 
-        Friend friendship = friendRepository.findByUserAndFriend(currentUser, friend).orElseThrow(CannotFindFriendRequestException::new);
+        Friendship friendship = friendRepository.findByFirstUserAndSecondUser(currentUser, friend).orElseThrow(CannotFindFriendRequestException::new);
 
         friendship.setAccepted(true);
 
         Set<MyUser> currentUserFriendList = currentUser.getFriends();
+
         Set<MyUser> friendList = friend.getFriends();
 
         currentUserFriendList.add(friend);
@@ -183,6 +184,8 @@ public class MyUserService implements UserDetailsService{
 
         userRepository.save(currentUser);
         userRepository.save(friend);
+
+        friendRepository.save(friendship);
 
         return currentUser.getFriends();
 

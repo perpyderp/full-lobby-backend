@@ -9,24 +9,24 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "friend")
-public class Friend {
+@Table(name = "friendship")
+public class Friendship {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private MyUser user;
+    @JoinColumn(name = "user_1_id")
+    private MyUser firstUser;
 
     @ManyToOne
-    @JoinColumn(name = "friend_id")
-    private MyUser friend;
+    @JoinColumn(name = "user_2_id")
+    private MyUser secondUser;
 
     private Boolean accepted;
 
-    public Friend() {
+    public Friendship() {
         this.accepted = false;
     }
 
@@ -38,20 +38,20 @@ public class Friend {
         this.id = id;
     }
 
-    public MyUser getUser() {
-        return user;
+    public MyUser getFirstUser() {
+        return firstUser;
     }
 
-    public void setUser(MyUser user) {
-        this.user = user;
+    public void setFirstUser(MyUser firstUser) {
+        this.firstUser = firstUser;
     }
 
-    public MyUser getFriend() {
-        return friend;
+    public MyUser getSecondUser() {
+        return secondUser;
     }
 
-    public void setFriend(MyUser friend) {
-        this.friend = friend;
+    public void setSecondUser(MyUser secondUser) {
+        this.secondUser = secondUser;
     }
 
     public Boolean getAccepted() {
@@ -64,7 +64,10 @@ public class Friend {
 
     @Override
     public String toString() {
-        return "Friend [id=" + id + ", user=" + user + ", friend=" + friend + ", accepted=" + accepted + "]";
+        return "Friendship [id=" + id + ", firstUser=" + firstUser + ", secondUser=" + secondUser + ", accepted="
+                + accepted + "]";
     }
+
+    
 
 }
