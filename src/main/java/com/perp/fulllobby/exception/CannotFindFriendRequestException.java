@@ -1,6 +1,6 @@
 package com.perp.fulllobby.exception;
 
-public class CannotFindFriendRequestException extends Exception {
+public class CannotFindFriendRequestException extends RuntimeException {
     
     /**
      * 

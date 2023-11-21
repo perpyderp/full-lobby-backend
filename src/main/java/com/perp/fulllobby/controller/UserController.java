@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.api.client.http.HttpResponse;
+import com.perp.fulllobby.exception.AlreadySentFriendRequestException;
 import com.perp.fulllobby.exception.CannotFindFriendRequestException;
 import com.perp.fulllobby.exception.CannotFriendSelf;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
@@ -59,6 +59,11 @@ public class UserController {
         return new ResponseEntity<String>("You friend request yourself. ", HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler({AlreadySentFriendRequestException.class})
+    public ResponseEntity<String> handleAlreadySentRequestException() {
+        return new ResponseEntity<String>("You've already sent a friend request", HttpStatus.CONFLICT);
+    }
+
     @GetMapping("/verify")
     public MyUser verifyIdentity(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
@@ -86,7 +91,7 @@ public class UserController {
 
     @PostMapping("/add-friend")
     public ResponseEntity<String> addFriend(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody LinkedHashMap<String, String> body) 
-        throws UnableToSendFriendRequest, CannotFriendSelf {
+        throws UnableToSendFriendRequest, CannotFriendSelf, AlreadySentFriendRequestException {
 
         String loggedInUser = tokenService.getUsernameFromToken(token);
         String addedUser = body.get("addedUser");
@@ -124,9 +129,13 @@ public class UserController {
         return userService.getUserFriends(username);
     }
 
-    @DeleteMapping("/{id}/friends")
-    public ResponseEntity<HttpResponse> removeFriend(@RequestBody MyUser removeFriend) {
-        return userService.removeFriend(removeFriend);
+    @DeleteMapping("/{username}/friends")
+    public ResponseEntity<String> removeFriend(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody LinkedHashMap<String, String> body) {
+
+        String loggedInUsername = tokenService.getUsernameFromToken(token);
+        String removedFriendUsername = body.get("removedFriend");
+
+        return userService.removeFriend(loggedInUsername, removedFriendUsername);
     }
 
 }

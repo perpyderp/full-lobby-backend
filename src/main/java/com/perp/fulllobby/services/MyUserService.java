@@ -17,11 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.api.client.http.HttpResponse;
+import com.perp.fulllobby.exception.AlreadySentFriendRequestException;
+import com.perp.fulllobby.exception.CannotAcceptFriendRequestException;
 import com.perp.fulllobby.exception.CannotFindFriendRequestException;
 import com.perp.fulllobby.exception.CannotFriendSelf;
 import com.perp.fulllobby.exception.CannotUpdateUserException;
 import com.perp.fulllobby.exception.EmailAlreadyTakenException;
+import com.perp.fulllobby.exception.FriendshipDoesNotExistException;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.exception.UnableToSendFriendRequest;
@@ -103,8 +105,15 @@ public class MyUserService implements UserDetailsService{
 
     }
 
-    public ResponseEntity<HttpResponse> removeFriend(MyUser removeFriend) {
-        return null;
+    public ResponseEntity<String> removeFriend(String username, String friendName) {
+
+        MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        MyUser friend = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
+
+        Friendship friendship = friendRepository.findByFirstUserAndSecondUserOrSecondUserAndFirstUser(currentUser, friend, friend, currentUser).orElseThrow(FriendshipDoesNotExistException::new);
+        friendRepository.delete(friendship);
+
+        return new ResponseEntity<String>("Removed " + friendName + " from friends", HttpStatus.OK);
     }
 
     @Override
@@ -142,12 +151,14 @@ public class MyUserService implements UserDetailsService{
         return userRepository.save(user);
     }
 
-    public ResponseEntity<String> sendFriendRequest(String username, String friendName) throws UnableToSendFriendRequest, CannotFriendSelf{
+    public ResponseEntity<String> sendFriendRequest(String username, String friendName) throws UnableToSendFriendRequest, CannotFriendSelf, AlreadySentFriendRequestException{
 
         if(username.equals(friendName)) throw new CannotFriendSelf();
 
         MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         MyUser addedUser = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
+
+        // if(friendRepository.findByFirstUserAndSecondUser(currentUser, addedUser) != null) throw new AlreadySentFriendRequestException();
 
         Friendship newFriend = new Friendship();
         newFriend.setFirstUser(currentUser);
@@ -163,17 +174,19 @@ public class MyUserService implements UserDetailsService{
         return new ResponseEntity<String>("Successfully sent friend request", HttpStatus.CREATED);
     }
 
-    public Set<MyUser> acceptFriend(String username, String friendName) throws CannotFindFriendRequestException{
+    public Set<MyUser> acceptFriend(String username, String friendName) throws CannotFindFriendRequestException, CannotFindFriendRequestException{
 
         MyUser currentUser = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
         MyUser friend = userRepository.findByUsername(friendName).orElseThrow(UserNotFoundException::new);
 
-        Friendship friendship = friendRepository.findByFirstUserAndSecondUser(currentUser, friend).orElseThrow(CannotFindFriendRequestException::new);
+        Friendship friendship = friendRepository.findByFirstUserAndSecondUser(friend, currentUser).orElseThrow(CannotFindFriendRequestException::new);
+
+        // You should only be able to accept if you're the receiving user (second user)
+        if(friendship.getSecondUser().getId() != currentUser.getId()) throw new CannotAcceptFriendRequestException();
 
         friendship.setAccepted(true);
 
         Set<MyUser> currentUserFriendList = currentUser.getFriends();
-
         Set<MyUser> friendList = friend.getFriends();
 
         currentUserFriendList.add(friend);
