@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/images/**").permitAll()
                 .requestMatchers("/api/user/{username}/friends/**").permitAll()
+                .requestMatchers("/api/user/{username}").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)

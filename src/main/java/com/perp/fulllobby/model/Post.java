@@ -39,35 +39,58 @@ public class Post {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public String getTitle() {
-        return title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public MyUser getUser() {
+        return user;
+    }
+
+    public void setUser(MyUser user) {
+        this.user = user;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
     public Date getUpdatedAt() {
         return updatedAt;
     }
+
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Post [id=" + id + ", title=" + title + ", description=" + description + ", user=" + user
+                + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
     }
 
 }

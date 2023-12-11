@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.exception.CannotCreatePostException;
 import com.perp.fulllobby.exception.PostNotFoundException;
+import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.Post;
 import com.perp.fulllobby.repository.PostRepository;
 
@@ -34,11 +35,12 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
-    public Post createPost(Post newPost) {
+    public Post createPost(Post newPost, MyUser user) {
         Post post = new Post();
 
         post.setTitle(newPost.getTitle());
         post.setDescription(newPost.getDescription());
+        post.setUser(user);
 
         try {
             return postRepository.save(post);
