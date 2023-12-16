@@ -39,6 +39,17 @@ public class Post {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    public Post(long id, String title, String description, MyUser user, Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Post() {}
+
     public long getId() {
         return id;
     }
