@@ -1,6 +1,7 @@
 package com.perp.fulllobby.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,11 @@ public class PostService {
     //     return postRepository.findByUsername(username);
     // }
 
-    public List<Post> getPostsByUserId(Long id) {
+    public List<Post> getPostsByUserId(UUID id) {
         return postRepository.findByUserId(id);
     }
 
-    public Post getPostById(Long id) {
+    public Post getPostById(UUID id) {
         return postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 

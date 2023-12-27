@@ -1,6 +1,7 @@
 package com.perp.fulllobby.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,7 +48,7 @@ public class PostController {
     }
 
     @GetMapping("/{userId}")
-    public List<Post> getPostsByUserId(@PathVariable(name = "userId", required = true)Long id) {
+    public List<Post> getPostsByUserId(@PathVariable(name = "userId", required = true)UUID id) {
         return postService.getPostsByUserId(id);
     }
 

@@ -3,6 +3,7 @@ package com.perp.fulllobby.services;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class MyUserService implements UserDetailsService{
         this.imageService = imageService;
     }
 
-    public MyUser getUserById(Long id) {
+    public MyUser getUserById(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 

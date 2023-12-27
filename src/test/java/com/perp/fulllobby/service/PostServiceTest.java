@@ -2,10 +2,10 @@ package com.perp.fulllobby.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ public class PostServiceTest {
         List<Post> posts = new ArrayList<>(size);
 
         for(int i = 0; i < size; i++) {
-            posts.add(new Post(new Random().nextLong(), "title" + i, "description" + i, new MyUser(), new Date(), new Date()));
+            posts.add(new Post(UUID.randomUUID(), "title" + i, "description" + i, new MyUser(), LocalDateTime.now(), LocalDateTime.now()));
         }
 
         return posts;

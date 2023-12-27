@@ -3,6 +3,7 @@ package com.perp.fulllobby.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,8 +31,8 @@ public class MyUser{
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private long id;
+    @Column(name = "id")
+    private UUID id;
 
     @Column
     private String username;
@@ -89,11 +90,11 @@ public class MyUser{
         this.verified = false;
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
