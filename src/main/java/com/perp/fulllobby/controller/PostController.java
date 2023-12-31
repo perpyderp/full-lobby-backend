@@ -39,6 +39,11 @@ public class PostController {
         return postService.getAllPosts();
     }
 
+    @GetMapping("/recent")
+    public List<Post> getRecentPosts() {
+        return postService.getRecentPosts();
+    }
+
     @PostMapping
     public Post createPost(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody Post newPost) {
 

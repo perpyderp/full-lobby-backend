@@ -9,4 +9,5 @@ import com.perp.fulllobby.model.Post;
 
 public interface PostRepository extends JpaRepository<Post, UUID>{
     List<Post> findByUserId(UUID userId);
+    List<Post> findTop10ByOrderByCreatedAtDesc();
 }

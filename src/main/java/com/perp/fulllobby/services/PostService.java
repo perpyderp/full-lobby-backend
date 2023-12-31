@@ -52,4 +52,8 @@ public class PostService {
         
     }
 
+    public List<Post> getRecentPosts() {
+        return postRepository.findTop10ByOrderByCreatedAtDesc();
+    }
+
 }
