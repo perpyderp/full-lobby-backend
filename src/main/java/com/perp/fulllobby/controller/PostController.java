@@ -3,6 +3,7 @@ package com.perp.fulllobby.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.model.MyUser;
@@ -55,6 +57,11 @@ public class PostController {
     @GetMapping("/{userId}")
     public List<Post> getPostsByUserId(@PathVariable(name = "userId", required = true)UUID id) {
         return postService.getPostsByUserId(id);
+    }
+
+    @GetMapping("/posts?page={page}&size={size}")
+    public Page<Post> getPaginatedPosts(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size) {
+        return postService.getPaginatedPosts(page, size);
     }
 
     // @GetMapping("/{username}")

@@ -3,6 +3,8 @@ package com.perp.fulllobby.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.exception.CannotCreatePostException;
@@ -54,6 +56,11 @@ public class PostService {
 
     public List<Post> getRecentPosts() {
         return postRepository.findTop10ByOrderByCreatedAtDesc();
+    }
+
+    public Page<Post> getPaginatedPosts(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return postRepository.findAll(pageable);
     }
 
 }

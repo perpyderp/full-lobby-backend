@@ -32,7 +32,7 @@ public class Post {
     @Column
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private MyUser user;
 
