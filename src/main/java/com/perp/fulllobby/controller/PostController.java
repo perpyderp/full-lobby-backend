@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,9 +63,13 @@ public class PostController {
         return postService.getPostsByUserId(id);
     }
 
-    @GetMapping("/posts?page={page}&size={size}")
-    public Page<Post> getPaginatedPosts(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size) {
-        return postService.getPaginatedPosts(page, size);
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<Post>> getPaginatedPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<Post> posts = postService.getPaginatedPosts(0, 2);
+        return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/like")
