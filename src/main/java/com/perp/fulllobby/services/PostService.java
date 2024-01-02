@@ -1,10 +1,14 @@
 package com.perp.fulllobby.services;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.exception.CannotCreatePostException;
@@ -59,8 +63,13 @@ public class PostService {
     }
 
     public Page<Post> getPaginatedPosts(int page, int size) {
-        PageRequest pageable = PageRequest.of(page, size);
+        PageRequest pageable = PageRequest.of(0, 2);
         return postRepository.findAll(pageable);
+    }
+
+    public Page<Post> getPostsBeforeCursor(Instant cursor, int pageSize) {
+        Pageable pageable = PageRequest.of(0, pageSize, Sort.by("createdAt").descending());
+        return postRepository.findPostsBeforeCursor(cursor, pageable);
     }
 
 }

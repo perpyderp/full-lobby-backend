@@ -79,7 +79,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/{username}").permitAll()
                 .anyRequest().permitAll()
             )
-            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+            // .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         
         return http.build();
