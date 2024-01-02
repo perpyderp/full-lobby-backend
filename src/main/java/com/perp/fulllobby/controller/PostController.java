@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,8 +42,13 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostDTO> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostDTO> getAllPosts(
+        @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token
+    ) {
+        MyUser loggedInUser = null;
+        if(token != null) {loggedInUser = userService.getByUsername(tokenService.getUsernameFromToken(token));}
+
+        return postService.getAllPosts(loggedInUser);
     }
 
     @GetMapping("/recent")
@@ -64,11 +70,14 @@ public class PostController {
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<Post>> getPaginatedPosts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<Page<PostDTO>> getPaginatedPosts(
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-        Page<Post> posts = postService.getPaginatedPosts(0, 2);
+        MyUser loggedInUser = null;
+        if(token != null) {loggedInUser = userService.getByUsername(tokenService.getUsernameFromToken(token));}
+        Page<PostDTO> posts = postService.getPaginatedPosts(page, size, loggedInUser);
         return ResponseEntity.ok(posts);
     }
 
@@ -78,6 +87,16 @@ public class PostController {
         UUID userId = body.get("userId");
 
         return postService.likePost(postId, userId);
+    }
+
+    @DeleteMapping("/like")
+    public ResponseEntity<String> removeLike(@RequestBody LinkedHashMap<String, UUID> body) {
+        UUID postId = body.get("postId");
+        UUID userId = body.get("userId");
+
+        postService.removeLike(postId, userId);
+
+        return ResponseEntity.ok("Successfully removed like");
     }
     
 

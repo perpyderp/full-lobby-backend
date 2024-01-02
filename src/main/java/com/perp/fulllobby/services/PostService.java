@@ -16,6 +16,7 @@ import com.perp.fulllobby.dto.LikesDTO;
 import com.perp.fulllobby.dto.PostDTO;
 import com.perp.fulllobby.dto.UserPostDTO;
 import com.perp.fulllobby.exception.CannotCreatePostException;
+import com.perp.fulllobby.exception.CannotFindLikeException;
 import com.perp.fulllobby.exception.CannotFindPostException;
 import com.perp.fulllobby.model.Like;
 import com.perp.fulllobby.model.MyUser;
@@ -36,16 +37,21 @@ public class PostService {
         this.userService = userService;
     }
 
-    public List<PostDTO> getAllPosts() {
+    public List<PostDTO> getAllPosts(MyUser loggedInUser) {
         List<Post> posts = postRepository.findAll();
         List<PostDTO> postDTOs = new ArrayList<>();
 
         for(Post post : posts) {
-            PostDTO postDTO = new PostDTO(post.getId(), post.getTitle(), post.getDescription(), null, null, post.getCreatedAt(), post.getUpdatedAt());
-
+            PostDTO postDTO = new PostDTO(post.getId(), post.getTitle(), post.getDescription(), null, false, post.getCreatedAt(), post.getUpdatedAt(), null);
+            
             MyUser userPoster = post.getUser();
             UserPostDTO user = new UserPostDTO(userPoster.getId(), userPoster.getUsername(), userPoster.getAvatar());
             postDTO.setUser(user);
+
+            if(loggedInUser != null) { 
+                boolean isLiked = likeRepository.existsByUserIdAndPostId(loggedInUser.getId(), post.getId());
+                postDTO.setLikedByMe(isLiked);
+            }
 
             List<LikesDTO> likeDTOs = post.getLikes().stream()
                 .map(like -> {
@@ -96,9 +102,17 @@ public class PostService {
         return postRepository.findTop10ByOrderByCreatedAtDesc();
     }
 
-    public Page<Post> getPaginatedPosts(int page, int size) {
-        PageRequest pageable = PageRequest.of(0, 2);
-        return postRepository.findAll(pageable);
+    public Page<PostDTO> getPaginatedPosts(int page, int size, MyUser loggedInUser) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Post> posts = postRepository.findAll(pageable);
+        Page<PostDTO> paginatedPostsDTO = posts.map(post -> {
+                boolean likedByMe = false;
+                if(loggedInUser != null) likedByMe = likeRepository.existsByUserIdAndPostId(loggedInUser.getId(), post.getId());
+                return new PostDTO(post, likedByMe);
+            }
+        );
+
+        return paginatedPostsDTO;
     }
 
     public Like likePost(UUID postId, UUID userId) {
@@ -106,12 +120,23 @@ public class PostService {
         Post post = getPostById(postId);
         MyUser user = userService.getUserById(userId);
 
-        System.out.println(post);
         Like like = new Like();
         like.setPost(post);
         like.setUser(user);
 
         return likeRepository.save(like);
+    }
+
+    public void removeLike(UUID postId, UUID userId) {
+        Like remove = likeRepository.findByUserIdAndPostId(userId, postId).orElseThrow(CannotFindLikeException::new);
+        System.out.println(remove);
+        try {
+            likeRepository.delete(remove);
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        
     }
 
     public Page<Post> getPostsBeforeCursor(Instant cursor, int pageSize) {

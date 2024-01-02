@@ -32,8 +32,8 @@ public class PostServiceTest {
     @Test
     void getAllPosts() {
         Mockito.doReturn(getMockPosts(2)).when(postRepository).findAll();
-
-        List<PostDTO> posts = this.postService.getAllPosts();
+        MyUser user = null;
+        List<PostDTO> posts = this.postService.getAllPosts(user);
 
         assertEquals(2, posts.size());
     }
