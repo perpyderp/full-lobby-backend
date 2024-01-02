@@ -2,7 +2,6 @@ package com.perp.fulllobby.model;
 
 import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,15 +22,15 @@ public class Like {
     /**
      * CascadeType.All - upon deleting user, delete all likes associated with the user
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
     private MyUser user;
 
     /**
      * CascadeType.All - upon deleting user, delete all likes associated with the user
      */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "postId", referencedColumnName = "id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "postId", referencedColumnName = "id", nullable = false)
     private Post post;
 
     public MyUser getUser() {

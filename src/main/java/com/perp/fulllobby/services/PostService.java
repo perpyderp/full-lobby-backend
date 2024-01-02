@@ -21,6 +21,7 @@ import com.perp.fulllobby.exception.CannotFindPostException;
 import com.perp.fulllobby.model.Like;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.Post;
+import com.perp.fulllobby.model.ToggleLikeResponse;
 import com.perp.fulllobby.repository.LikeRepository;
 import com.perp.fulllobby.repository.PostRepository;
 
@@ -70,10 +71,6 @@ public class PostService {
 
     }
 
-    // public List<Post> getPostsByUsername(String username) {
-    //     return postRepository.findByUsername(username);
-    // }
-
     public List<Post> getPostsByUserId(UUID id) {
         return postRepository.findByUserId(id);
     }
@@ -115,28 +112,28 @@ public class PostService {
         return paginatedPostsDTO;
     }
 
-    public Like likePost(UUID postId, UUID userId) {
+    public ToggleLikeResponse toggleLike(UUID postId, UUID userId) {
 
         Post post = getPostById(postId);
         MyUser user = userService.getUserById(userId);
-
-        Like like = new Like();
-        like.setPost(post);
-        like.setUser(user);
-
-        return likeRepository.save(like);
-    }
-
-    public void removeLike(UUID postId, UUID userId) {
-        Like remove = likeRepository.findByUserIdAndPostId(userId, postId).orElseThrow(CannotFindLikeException::new);
-        System.out.println(remove);
-        try {
-            likeRepository.delete(remove);
-        }
-        catch(Exception e) {
-            System.out.println(e);
-        }
         
+        Like existingLike = likeRepository.findByUserIdAndPostId(userId, postId);
+        System.out.println(existingLike);
+        if(existingLike == null) {
+            Like like = new Like();
+            like.setPost(post);
+            like.setUser(user);
+
+            likeRepository.save(like);
+
+            return new ToggleLikeResponse(true);
+        }
+
+        Like like = likeRepository.findByUserIdAndPostId(userId, postId);
+        likeRepository.delete(like);
+
+        return new ToggleLikeResponse(false);
+
     }
 
     public Page<Post> getPostsBeforeCursor(Instant cursor, int pageSize) {

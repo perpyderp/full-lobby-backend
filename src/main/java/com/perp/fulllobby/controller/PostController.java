@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perp.fulllobby.dto.PostDTO;
-import com.perp.fulllobby.model.Like;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.Post;
+import com.perp.fulllobby.model.ToggleLikeResponse;
 import com.perp.fulllobby.services.MyUserService;
 import com.perp.fulllobby.services.PostService;
 import com.perp.fulllobby.services.TokenService;
@@ -82,23 +81,13 @@ public class PostController {
     }
 
     @PostMapping("/like")
-    public Like likePost(@RequestBody LinkedHashMap<String, UUID> body) {
-        UUID postId = body.get("postId");
-        UUID userId = body.get("userId");
+    public ResponseEntity<ToggleLikeResponse> toggleLike(@RequestBody LinkedHashMap<String, String> body) {
+        System.out.println(body);
+        UUID postId = UUID.fromString(body.get("postId"));
+        UUID userId = UUID.fromString(body.get("userId"));
 
-        return postService.likePost(postId, userId);
+        return ResponseEntity.ok(postService.toggleLike(postId, userId));
     }
-
-    @DeleteMapping("/like")
-    public ResponseEntity<String> removeLike(@RequestBody LinkedHashMap<String, UUID> body) {
-        UUID postId = body.get("postId");
-        UUID userId = body.get("userId");
-
-        postService.removeLike(postId, userId);
-
-        return ResponseEntity.ok("Successfully removed like");
-    }
-    
 
     // @GetMapping("/{username}")
     // public List<Post> getPostsByUsername(@PathVariable(name = "username", required = true)String username) {
