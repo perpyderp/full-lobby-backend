@@ -24,14 +24,14 @@ public class Like {
      * CascadeType.All - upon deleting user, delete all likes associated with the user
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false, unique = true)
     private MyUser user;
 
     /**
      * CascadeType.All - upon deleting user, delete all likes associated with the user
      */
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "postId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "postId", referencedColumnName = "id", nullable = false, unique = true)
     private Post post;
 
     public MyUser getUser() {

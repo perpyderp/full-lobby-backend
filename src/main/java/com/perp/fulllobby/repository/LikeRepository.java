@@ -9,4 +9,5 @@ import com.perp.fulllobby.model.Like;
 
 public interface LikeRepository extends JpaRepository<Like, UUID> {
     Optional<Like> findByUserIdAndPostId(UUID userId, UUID postId);
+    boolean existsByUserIdAndPostId(UUID userId, UUID postId);
 }
