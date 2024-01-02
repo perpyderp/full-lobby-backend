@@ -5,6 +5,8 @@ import java.util.UUID;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,10 +17,8 @@ import jakarta.persistence.Table;
 public class Like {
     
     @Id
-    private UUID userId;
-
-    @Id
-    private UUID postId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     /**
      * CascadeType.All - upon deleting user, delete all likes associated with the user
@@ -33,22 +33,6 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "postId", referencedColumnName = "id", nullable = false)
     private Post post;
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public UUID getPostId() {
-        return postId;
-    }
-
-    public void setPostId(UUID postId) {
-        this.postId = postId;
-    }
 
     public MyUser getUser() {
         return user;
@@ -68,7 +52,15 @@ public class Like {
 
     @Override
     public String toString() {
-        return "Like [userId=" + userId + ", postId=" + postId + ", user=" + user + ", post=" + post + "]";
+        return "Like [id=" + id + ", user=" + user + ", post=" + post + "]";
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
     
 }

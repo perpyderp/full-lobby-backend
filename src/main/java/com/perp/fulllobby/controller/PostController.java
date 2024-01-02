@@ -1,5 +1,6 @@
 package com.perp.fulllobby.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perp.fulllobby.dto.PostDTO;
+import com.perp.fulllobby.model.Like;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.Post;
 import com.perp.fulllobby.services.MyUserService;
@@ -37,7 +40,7 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> getAllPosts() {
+    public List<PostDTO> getAllPosts() {
         return postService.getAllPosts();
     }
 
@@ -63,6 +66,15 @@ public class PostController {
     public Page<Post> getPaginatedPosts(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size) {
         return postService.getPaginatedPosts(page, size);
     }
+
+    @PostMapping("/like")
+    public Like likePost(@RequestBody LinkedHashMap<String, UUID> body) {
+        UUID postId = body.get("postId");
+        UUID userId = body.get("userId");
+
+        return postService.likePost(postId, userId);
+    }
+    
 
     // @GetMapping("/{username}")
     // public List<Post> getPostsByUsername(@PathVariable(name = "username", required = true)String username) {

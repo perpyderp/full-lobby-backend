@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.perp.fulllobby.dto.PostDTO;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.model.Post;
 import com.perp.fulllobby.repository.PostRepository;
@@ -32,7 +33,7 @@ public class PostServiceTest {
     void getAllPosts() {
         Mockito.doReturn(getMockPosts(2)).when(postRepository).findAll();
 
-        List<Post> posts = this.postService.getAllPosts();
+        List<PostDTO> posts = this.postService.getAllPosts();
 
         assertEquals(2, posts.size());
     }

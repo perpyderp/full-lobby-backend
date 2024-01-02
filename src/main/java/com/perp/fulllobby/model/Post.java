@@ -1,7 +1,11 @@
 package com.perp.fulllobby.model;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -35,6 +40,10 @@ public class Post {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private MyUser user;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Like> likes = new HashSet<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -97,6 +106,14 @@ public class Post {
         this.user = user;
     }
 
+    public Set<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -115,8 +132,8 @@ public class Post {
 
     @Override
     public String toString() {
-        return "Post [id=" + id + ", title=" + title + ", description=" + description + ", user=" + user
-                + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+        return "Post [id=" + id + ", title=" + title + ", description=" + description + ", user=" + user + ", likes="
+                + likes + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
     }
 
 }
