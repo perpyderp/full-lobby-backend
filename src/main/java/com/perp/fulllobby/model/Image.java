@@ -30,6 +30,8 @@ public class Image {
     @Column(name = "image_url")
     private String imageUrl;
 
+    public Image() {}
+
     public Image(String imageName, String imageType, String imagePath, String imageUrl) {
         this.imageName = imageName;
         this.imageType = imageType;
