@@ -16,7 +16,6 @@ import com.perp.fulllobby.dto.LikesDTO;
 import com.perp.fulllobby.dto.PostDTO;
 import com.perp.fulllobby.dto.UserPostDTO;
 import com.perp.fulllobby.exception.CannotCreatePostException;
-import com.perp.fulllobby.exception.CannotFindLikeException;
 import com.perp.fulllobby.exception.CannotFindPostException;
 import com.perp.fulllobby.model.Like;
 import com.perp.fulllobby.model.MyUser;
@@ -118,7 +117,7 @@ public class PostService {
         MyUser user = userService.getUserById(userId);
         
         Like existingLike = likeRepository.findByUserIdAndPostId(userId, postId);
-        System.out.println(existingLike);
+
         if(existingLike == null) {
             Like like = new Like();
             like.setPost(post);

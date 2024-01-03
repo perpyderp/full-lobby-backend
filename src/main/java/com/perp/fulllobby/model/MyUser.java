@@ -67,7 +67,7 @@ public class MyUser{
     @Column
     private Boolean verified;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
         name="user_friends_junction",
         joinColumns = {@JoinColumn(name = "user_id")},

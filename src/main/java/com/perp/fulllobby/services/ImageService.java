@@ -24,7 +24,7 @@ public class ImageService {
 
     // private static final String IMGUR_UPLOAD_URL = "https://api.imgur.com/3/image";
     private static final File DIRECTORY = new File(Dotenv.configure().load().get("IMG_URL"));
-    private static final String URL = "http://localhost:8080/images/";
+    private static final String URL = "http://localhost:8080/api/images/";
 
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;

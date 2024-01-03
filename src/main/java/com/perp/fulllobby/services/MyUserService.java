@@ -147,7 +147,7 @@ public class MyUserService implements UserDetailsService{
 
         Image banner = imageService.uploadAvatar(file);
 
-        user.setBanner(banner);
+        user.setAvatar(banner);
 
         return userRepository.save(user);
     }

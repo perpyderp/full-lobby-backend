@@ -2,6 +2,8 @@ package com.perp.fulllobby.model;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +26,7 @@ public class Image {
     @Column(name = "image_type")
     private String imageType;
 
+    @JsonIgnore
     @Column(name = "image_path")
     private String imagePath;
 
