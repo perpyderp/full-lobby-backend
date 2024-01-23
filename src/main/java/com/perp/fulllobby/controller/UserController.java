@@ -73,6 +73,26 @@ public class UserController {
 
     }
 
+    @GetMapping("/exists/email/{email}")
+    public ResponseEntity<Boolean> existsByEmailOrUsername(@PathVariable(name = "email") String email) {
+
+        boolean exists = userService.existsByEmail(email);
+
+        if(exists) return new ResponseEntity<Boolean>(userService.existsByEmail(email), HttpStatus.OK);
+
+        return new ResponseEntity<Boolean>(userService.existsByEmail(email), HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/exists/username/{username}")
+    public ResponseEntity<Boolean> getMethodName(@PathVariable(name = "username") String username) {
+        boolean exists = userService.existsByUsername(username);
+
+        if(exists) return new ResponseEntity<Boolean>(userService.existsByUsername(username), HttpStatus.OK);
+
+        return new ResponseEntity<Boolean>(userService.existsByUsername(username), HttpStatus.NOT_FOUND);
+    }
+    
+
     @PostMapping("/upload/avatar")
     public MyUser uploadAvatar(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam("image") MultipartFile file) throws UnableToSaveAvatarException{
 

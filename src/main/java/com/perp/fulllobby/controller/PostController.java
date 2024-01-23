@@ -82,12 +82,12 @@ public class PostController {
 
     @PostMapping("/like")
     public ResponseEntity<ToggleLikeResponse> toggleLike(@RequestBody LinkedHashMap<String, String> body) {
-        System.out.println(body);
+
         UUID postId = UUID.fromString(body.get("postId"));
         UUID userId = UUID.fromString(body.get("userId"));
 
         return ResponseEntity.ok(postService.toggleLike(postId, userId));
-    }
+    }       
 
     // @GetMapping("/{username}")
     // public List<Post> getPostsByUsername(@PathVariable(name = "username", required = true)String username) {

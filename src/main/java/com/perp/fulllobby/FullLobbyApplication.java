@@ -25,26 +25,26 @@ public class FullLobbyApplication {
 		SpringApplication.run(FullLobbyApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		return args -> {
-			Role r = roleRepository.save(new Role(1, "USER"));
+	// @Bean
+	// CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	// 	return args -> {
+	// 		Role r = roleRepository.save(new Role(1, "USER"));
 
-			Set<Role> roles = new HashSet<>();
+	// 		Set<Role> roles = new HashSet<>();
 
-			roles.add(r);
+	// 		roles.add(r);
 
-			MyUser user = new MyUser();
-			user.setAuthorities(roles);
-			user.setFirstName("Perp");
-			user.setLastName("Derpy");
-			user.setEmail("jacob.cuison7@gmail.com");
-			user.setUsername("perp");
-			user.setPassword(passwordEncoder.encode("password"));
-			user.setVerified(true);
+	// 		MyUser user = new MyUser();
+	// 		user.setAuthorities(roles);
+	// 		user.setFirstName("Perp");
+	// 		user.setLastName("Derpy");
+	// 		user.setEmail("jacob.cuison7@gmail.com");
+	// 		user.setUsername("perp");
+	// 		user.setPassword(passwordEncoder.encode("password"));
+	// 		user.setVerified(true);
 
-			userRepository.save(user);
-		};
-	}
+	// 		userRepository.save(user);
+	// 	};
+	// }
 
 }
