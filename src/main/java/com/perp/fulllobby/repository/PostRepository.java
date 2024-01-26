@@ -16,6 +16,7 @@ public interface PostRepository extends JpaRepository<Post, UUID>{
     List<Post> findByUserId(UUID userId);
     List<Post> findTop10ByOrderByCreatedAtDesc();
     Page<Post> findAll(Pageable pageable);
+    Page<Post> findByUserId(UUID userId, Pageable pageable);
     
     @Query("SELECT p FROM Post p WHERE p.createdAt < :cursor ORDER BY p.createdAt DESC")
     Page<Post> findPostsBeforeCursor(

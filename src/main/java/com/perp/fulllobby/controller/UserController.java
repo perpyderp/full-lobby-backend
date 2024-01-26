@@ -2,6 +2,7 @@ package com.perp.fulllobby.controller;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.LinkedHashMap;
 
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.perp.fulllobby.dto.MyUserDTO;
 import com.perp.fulllobby.exception.AlreadySentFriendRequestException;
 import com.perp.fulllobby.exception.CannotFindFriendRequestException;
 import com.perp.fulllobby.exception.CannotFriendSelf;
@@ -73,8 +76,15 @@ public class UserController {
 
     }
 
+    @GetMapping("/id/{userId}")
+    public MyUser getMyUserById(@PathVariable(name = "userId") UUID id) {
+
+        return userService.getUserById(id);
+    }
+    
+
     @GetMapping("/exists/email/{email}")
-    public ResponseEntity<Boolean> existsByEmailOrUsername(@PathVariable(name = "email") String email) {
+    public ResponseEntity<Boolean> existsByEmail(@PathVariable(name = "email") String email) {
 
         boolean exists = userService.existsByEmail(email);
 
@@ -84,7 +94,7 @@ public class UserController {
     }
 
     @GetMapping("/exists/username/{username}")
-    public ResponseEntity<Boolean> getMethodName(@PathVariable(name = "username") String username) {
+    public ResponseEntity<Boolean> existsByUsername(@PathVariable(name = "username") String username) {
         boolean exists = userService.existsByUsername(username);
 
         if(exists) return new ResponseEntity<Boolean>(userService.existsByUsername(username), HttpStatus.OK);
@@ -127,12 +137,6 @@ public class UserController {
 
         return userService.acceptFriend(loggedInUser, acceptedUser);
     }
-    
-
-    @PutMapping("/")
-    public MyUser updateUser(@RequestBody MyUser user) {
-        return userService.updateUser(user);
-    }
 
     @GetMapping("/{username}")
     public MyUser getUser(@PathVariable(name = "username") String username) {
@@ -147,6 +151,16 @@ public class UserController {
     @GetMapping("/{username}/friends")
     public Set<MyUser> getUserFriends(@PathVariable("username") String username) {
         return userService.getUserFriends(username);
+    }
+
+    @PatchMapping("/")
+    public MyUser updateUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    @RequestBody MyUserDTO updatedUser) {
+
+        String username = tokenService.getUsernameFromToken(token);
+        
+        return userService.updateUser(updatedUser, username);
+
     }
 
     @DeleteMapping("/{username}/friends")

@@ -4,15 +4,15 @@ import java.util.UUID;
 
 import com.perp.fulllobby.model.Image;
 
-public class UserPostDTO {
+public class MyUserPostDTO {
     
     private UUID id;
     private String username;
     private Image avatar;
 
-    public UserPostDTO() {}
+    public MyUserPostDTO() {}
 
-    public UserPostDTO(UUID id, String username, Image avatar) {
+    public MyUserPostDTO(UUID id, String username, Image avatar) {
         this.id = id;
         this.username = username;
         this.avatar = avatar;

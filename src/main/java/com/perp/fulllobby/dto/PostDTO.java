@@ -16,7 +16,7 @@ public class PostDTO {
     private boolean likedByMe;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserPostDTO user;
+    private MyUserPostDTO user;
 
     public PostDTO() {}
 
@@ -35,11 +35,11 @@ public class PostDTO {
 		this.likedByMe = likedByMe;
 		this.createdAt = post.getCreatedAt();
 		this.updatedAt = post.getUpdatedAt();
-		this.user = new UserPostDTO(post.getUser().getId(), post.getUser().getUsername(), post.getUser().getAvatar());
+		this.user = new MyUserPostDTO(post.getUser().getId(), post.getUser().getUsername(), post.getUser().getAvatar());
     }
 
 	public PostDTO(UUID id, String title, String description, List<LikesDTO> likes, boolean likedByMe,
-			LocalDateTime createdAt, LocalDateTime updatedAt, UserPostDTO user) {
+			LocalDateTime createdAt, LocalDateTime updatedAt, MyUserPostDTO user) {
 		this.id = id;
 		this.title = title;
 		this.description = description;
@@ -106,11 +106,11 @@ public class PostDTO {
 		this.updatedAt = updatedAt;
 	}
 
-	public UserPostDTO getUser() {
+	public MyUserPostDTO getUser() {
 		return user;
 	}
 
-	public void setUser(UserPostDTO user) {
+	public void setUser(MyUserPostDTO user) {
 		this.user = user;
 	}
 

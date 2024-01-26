@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.perp.fulllobby.dto.LikesDTO;
 import com.perp.fulllobby.dto.PostDTO;
-import com.perp.fulllobby.dto.UserPostDTO;
+import com.perp.fulllobby.dto.MyUserPostDTO;
 import com.perp.fulllobby.exception.CannotCreatePostException;
 import com.perp.fulllobby.exception.CannotFindPostException;
 import com.perp.fulllobby.model.Like;
@@ -45,7 +45,7 @@ public class PostService {
             PostDTO postDTO = new PostDTO(post.getId(), post.getTitle(), post.getDescription(), null, false, post.getCreatedAt(), post.getUpdatedAt(), null);
             
             MyUser userPoster = post.getUser();
-            UserPostDTO user = new UserPostDTO(userPoster.getId(), userPoster.getUsername(), userPoster.getAvatar());
+            MyUserPostDTO user = new MyUserPostDTO(userPoster.getId(), userPoster.getUsername(), userPoster.getAvatar());
             postDTO.setUser(user);
 
             if(loggedInUser != null) { 
@@ -99,8 +99,21 @@ public class PostService {
     }
 
     public Page<PostDTO> getPaginatedPosts(int page, int size, MyUser loggedInUser) {
-        PageRequest pageable = PageRequest.of(page, size);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Post> posts = postRepository.findAll(pageable);
+        Page<PostDTO> paginatedPostsDTO = posts.map(post -> {
+                boolean likedByMe = false;
+                if(loggedInUser != null) likedByMe = likeRepository.existsByUserIdAndPostId(loggedInUser.getId(), post.getId());
+                return new PostDTO(post, likedByMe);
+            }
+        );
+
+        return paginatedPostsDTO;
+    }
+
+    public Page<PostDTO> getPaginatedPostsByUserId(int page, int size, MyUser loggedInUser, UUID userId) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Post> posts = postRepository.findByUserId(userId, pageable);
         Page<PostDTO> paginatedPostsDTO = posts.map(post -> {
                 boolean likedByMe = false;
                 if(loggedInUser != null) likedByMe = likeRepository.existsByUserIdAndPostId(loggedInUser.getId(), post.getId());

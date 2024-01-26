@@ -90,6 +90,29 @@ public class MyUser{
         this.verified = false;
     }
 
+    
+
+    public MyUser(UUID id, String username, String email, String password, String firstName, String lastName, Date dob,
+            String bio, String nickname, Image avatar, Image banner, Set<MyUser> friends
+    ) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dob = dob;
+        this.bio = bio;
+        this.nickname = nickname;
+        this.avatar = avatar;
+        this.banner = banner;
+        this.friends = friends;
+        this.authorities = new HashSet<>();
+        this.verified = false;
+    }
+
+
+
     public UUID getId() {
         return id;
     }

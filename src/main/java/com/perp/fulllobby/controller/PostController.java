@@ -72,10 +72,16 @@ public class PostController {
     public ResponseEntity<Page<PostDTO>> getPaginatedPosts(
             @RequestHeader(name = HttpHeaders.AUTHORIZATION, required = false) String token,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "userid", required = false) String userId
     ) {
         MyUser loggedInUser = null;
         if(token != null) {loggedInUser = userService.getByUsername(tokenService.getUsernameFromToken(token));}
+
+        if(userId != null) {
+            Page<PostDTO> posts = postService.getPaginatedPostsByUserId(page, size, loggedInUser, UUID.fromString(userId));
+            return ResponseEntity.ok(posts);
+        }
         Page<PostDTO> posts = postService.getPaginatedPosts(page, size, loggedInUser);
         return ResponseEntity.ok(posts);
     }
