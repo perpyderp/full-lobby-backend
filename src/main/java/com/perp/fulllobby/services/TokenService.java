@@ -43,7 +43,7 @@ public class TokenService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws InvalidBearerTokenException{
 
         if(!token.substring(0, 6).equals("Bearer")) throw new InvalidBearerTokenException("Token isn't a Bearer token");
 

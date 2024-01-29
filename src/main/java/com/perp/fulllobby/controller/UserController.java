@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,7 @@ import com.perp.fulllobby.exception.CannotFriendSelf;
 import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.exception.UnableToSendFriendRequest;
+import com.perp.fulllobby.exception.UserNotFoundException;
 import com.perp.fulllobby.model.MyUser;
 import com.perp.fulllobby.services.MyUserService;
 import com.perp.fulllobby.services.TokenService;
@@ -67,8 +69,18 @@ public class UserController {
         return new ResponseEntity<String>("You've already sent a friend request", HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler({UserNotFoundException.class})
+    public ResponseEntity<String> handlerUserNotFoundException() {
+        return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({InvalidBearerTokenException.class})
+    public ResponseEntity<String> handlerInvalidBearerTokenException() {
+        return new ResponseEntity<String>("Invalid Bearer token", HttpStatus.UNAUTHORIZED);
+    }
+
     @GetMapping("/verify")
-    public MyUser verifyIdentity(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public MyUser verifyIdentity(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws InvalidBearerTokenException, UserNotFoundException {
 
         String username = tokenService.getUsernameFromToken(token);
 
@@ -77,7 +89,7 @@ public class UserController {
     }
 
     @GetMapping("/id/{userId}")
-    public MyUser getMyUserById(@PathVariable(name = "userId") UUID id) {
+    public MyUser getMyUserById(@PathVariable(name = "userId") UUID id) throws UserNotFoundException{
 
         return userService.getUserById(id);
     }

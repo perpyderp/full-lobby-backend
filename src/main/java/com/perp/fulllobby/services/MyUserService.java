@@ -58,7 +58,7 @@ public class MyUserService implements UserDetailsService{
         this.imageService = imageService;
     }
 
-    public MyUser getUserById(UUID id) {
+    public MyUser getUserById(UUID id) throws UserNotFoundException{
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
@@ -66,7 +66,7 @@ public class MyUserService implements UserDetailsService{
         return userRepository.findAll();
     }
 
-    public MyUser getByUsername(String username) {
+    public MyUser getByUsername(String username) throws UserNotFoundException{
         MyUser user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
         return user;
