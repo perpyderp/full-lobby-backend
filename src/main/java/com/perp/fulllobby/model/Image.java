@@ -1,5 +1,9 @@
 package com.perp.fulllobby.model;
 
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +18,7 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "image_id")
-    private Long imageId;
+    private UUID imageId;
 
     @Column(name = "image_name")
     private String imageName;
@@ -22,11 +26,14 @@ public class Image {
     @Column(name = "image_type")
     private String imageType;
 
+    @JsonIgnore
     @Column(name = "image_path")
     private String imagePath;
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    public Image() {}
 
     public Image(String imageName, String imageType, String imagePath, String imageUrl) {
         this.imageName = imageName;
@@ -35,7 +42,7 @@ public class Image {
         this.imageUrl = imageUrl;
     }
 
-    public Image(Long imageId, String imageName, String imageType, String imagePath, String imageUrl) {
+    public Image(UUID imageId, String imageName, String imageType, String imagePath, String imageUrl) {
         this.imageId = imageId;
         this.imageName = imageName;
         this.imageType = imageType;
@@ -43,11 +50,11 @@ public class Image {
         this.imageUrl = imageUrl;
     }
 
-    public Long getImageId() {
+    public UUID getImageId() {
         return imageId;
     }
 
-    public void setImageId(Long imageId) {
+    public void setImageId(UUID imageId) {
         this.imageId = imageId;
     }
 

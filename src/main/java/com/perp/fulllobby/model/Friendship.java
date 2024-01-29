@@ -17,11 +17,11 @@ public class Friendship {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_1_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_1_id", referencedColumnName = "id")
     private MyUser firstUser;
 
     @ManyToOne
-    @JoinColumn(name = "user_2_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_2_id", referencedColumnName = "id")
     private MyUser secondUser;
 
     private Boolean accepted;

@@ -30,7 +30,7 @@ public class ImageController {
     }
 
     @GetMapping("/{filename}")
-    public ResponseEntity<byte[]> downloadImage(@PathVariable String filename) throws ImageNotFoundException{
+    public ResponseEntity<byte[]> downloadImage(@PathVariable(name = "filename") String filename) throws ImageNotFoundException{
         byte[] imageBytes = imageService.downloadImage(filename);
 
         return ResponseEntity
