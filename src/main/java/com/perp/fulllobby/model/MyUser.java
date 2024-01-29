@@ -3,6 +3,7 @@ package com.perp.fulllobby.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,8 +31,8 @@ public class MyUser{
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
-    private long id;
+    @Column(name = "id")
+    private UUID id;
 
     @Column
     private String username;
@@ -66,7 +67,7 @@ public class MyUser{
     @Column
     private Boolean verified;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
         name="user_friends_junction",
         joinColumns = {@JoinColumn(name = "user_id")},
@@ -89,11 +90,34 @@ public class MyUser{
         this.verified = false;
     }
 
-    public long getId() {
+    
+
+    public MyUser(UUID id, String username, String email, String password, String firstName, String lastName, Date dob,
+            String bio, String nickname, Image avatar, Image banner, Set<MyUser> friends
+    ) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dob = dob;
+        this.bio = bio;
+        this.nickname = nickname;
+        this.avatar = avatar;
+        this.banner = banner;
+        this.friends = friends;
+        this.authorities = new HashSet<>();
+        this.verified = false;
+    }
+
+
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

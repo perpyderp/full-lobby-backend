@@ -3,6 +3,7 @@ package com.perp.fulllobby.services;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.perp.fulllobby.dto.MyUserDTO;
 import com.perp.fulllobby.exception.AlreadySentFriendRequestException;
 import com.perp.fulllobby.exception.CannotAcceptFriendRequestException;
 import com.perp.fulllobby.exception.CannotFindFriendRequestException;
@@ -28,6 +30,7 @@ import com.perp.fulllobby.exception.UnableToSaveAvatarException;
 import com.perp.fulllobby.exception.UnableToSaveBannerException;
 import com.perp.fulllobby.exception.UnableToSendFriendRequest;
 import com.perp.fulllobby.exception.UserNotFoundException;
+import com.perp.fulllobby.mapper.MyUserMapper;
 import com.perp.fulllobby.model.Friendship;
 import com.perp.fulllobby.model.Image;
 import com.perp.fulllobby.model.MyUser;
@@ -55,7 +58,7 @@ public class MyUserService implements UserDetailsService{
         this.imageService = imageService;
     }
 
-    public MyUser getUserById(Long id) {
+    public MyUser getUserById(UUID id) throws UserNotFoundException{
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
@@ -63,7 +66,7 @@ public class MyUserService implements UserDetailsService{
         return userRepository.findAll();
     }
 
-    public MyUser getByUsername(String username) {
+    public MyUser getByUsername(String username) throws UserNotFoundException{
         MyUser user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
         return user;
@@ -88,9 +91,19 @@ public class MyUserService implements UserDetailsService{
         }
     }
 
-    public MyUser updateUser(MyUser updatedUser) {
+    public MyUser updateUser(MyUserDTO updatedUser, String username) {
         try {
-            return userRepository.save(updatedUser);
+
+            MyUser user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+            MyUserMapper userMapper = new MyUserMapper();
+
+            MyUser newUserInfo = userMapper.convertToMyUser(updatedUser);
+
+            if(newUserInfo.getUsername() != null) user.setUsername(newUserInfo.getUsername());
+            if(newUserInfo.getFirstName() != null) user.setFirstName(newUserInfo.getFirstName());
+
+            return null;
         }
         catch (Exception e) {
             throw new CannotUpdateUserException();
@@ -146,7 +159,7 @@ public class MyUserService implements UserDetailsService{
 
         Image banner = imageService.uploadAvatar(file);
 
-        user.setBanner(banner);
+        user.setAvatar(banner);
 
         return userRepository.save(user);
     }
@@ -206,6 +219,22 @@ public class MyUserService implements UserDetailsService{
 
     public MyUser verifyUser(String username, Long code) {
         return null;
+    }
+
+    public Boolean existsByEmail(String email) {
+        boolean existsByEmail = userRepository.existsByEmail(email);
+
+        if(existsByEmail) return true;
+
+        return false;
+    }
+
+    public Boolean existsByUsername(String username) {
+        boolean existsByUsername = userRepository.existsByUsername(username);
+
+        if(existsByUsername) return true;
+
+        return false;
     }
 
 }

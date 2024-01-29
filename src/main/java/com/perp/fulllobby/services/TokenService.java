@@ -1,6 +1,7 @@
 package com.perp.fulllobby.services;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ public class TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self")
             .issuedAt(now)
+            .expiresAt(now.plus(1, ChronoUnit.HOURS))
             .subject(auth.getName())
             .claim("scope", scope)
             .build();
@@ -41,7 +43,7 @@ public class TokenService {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws InvalidBearerTokenException{
 
         if(!token.substring(0, 6).equals("Bearer")) throw new InvalidBearerTokenException("Token isn't a Bearer token");
 
